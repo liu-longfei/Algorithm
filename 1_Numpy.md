@@ -127,7 +127,7 @@ class Solution:
 
         while left <= right:
             middle = left + (right - left) // 2
-        
+      
             if nums[middle] > target:
                 right = middle - 1  # target在左区间，所以[left, middle - 1]
             elif nums[middle] < target:
@@ -558,17 +558,17 @@ class Solution:
         right = 0
         min_len = float('inf')
         cur_sum = 0 #当前的累加值
-    
+  
         while right < l:
             cur_sum += nums[right]
-        
+      
             while cur_sum >= s: # 当前累加值大于目标值
                 min_len = min(min_len, right - left + 1)
                 cur_sum -= nums[left]
                 left += 1
-        
+      
             right += 1
-    
+  
         return min_len if min_len != float('inf') else 0
 
 （版本二）暴力法
@@ -576,7 +576,7 @@ class Solution:
     def minSubArrayLen(self, s: int, nums: List[int]) -> int:
         l = len(nums)
         min_len = float('inf')
-    
+  
         for i in range(l):
             cur_sum = 0
             for j in range(i, l):
@@ -584,7 +584,7 @@ class Solution:
                 if cur_sum >= s:
                     min_len = min(min_len, j - i + 1)
                     break
-    
+  
         return min_len if min_len != float('inf') else 0
 ```
 
@@ -627,8 +627,104 @@ class Solution:
 
 那么我按照左闭右开的原则，来画一圈，大家看一下：
 
-<img height="30%" src="https://code-thinking-1253855093.file.myqcloud.com/pics/20220922102236.png" width="30%"/>
+<img height="50%" src="https://code-thinking-1253855093.file.myqcloud.com/pics/20220922102236.png" width="50%"/>
+
+这里每一种颜色，代表一条边，我们遍历的长度，可以看出每一个拐角处的处理规则，拐角处让给新的一条边来继续画。
+
+这也是坚持了每条边左闭右开的原则。
+
+一些同学做这道题目之所以一直写不好，代码越写越乱。
+
+就是因为在画每一条边的时候，一会左开右闭，一会左闭右闭，一会又来左闭右开，岂能不乱。
+
+代码如下，已经详细注释了每一步的目的，可以看出while循环里判断的情况是很多的，代码里处理的原则也是统一的左闭右开。
+
+整体C++代码如下：
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> res(n, vector<int>(n, 0)); // 使用vector定义一个二维数组
+        int startx = 0, starty = 0; // 定义每循环一个圈的起始位置
+        int loop = n / 2; // 每个圈循环几次，例如n为奇数3，那么loop = 1 只是循环一圈，矩阵中间的值需要单独处理
+        int mid = n / 2; // 矩阵中间的位置，例如：n为3， 中间的位置就是(1，1)，n为5，中间位置为(2, 2)
+        int count = 1; // 用来给矩阵中每一个空格赋值
+        int offset = 1; // 需要控制每一条边遍历的长度，每次循环右边界收缩一位
+        int i,j;
+        while (loop --) {
+            i = startx;
+            j = starty;
+
+            // 下面开始的四个for就是模拟转了一圈
+            // 模拟填充上行从左到右(左闭右开)
+            for (j = starty; j < n - offset; j++) {
+                res[startx][j] = count++;
+            }
+            // 模拟填充右列从上到下(左闭右开)
+            for (i = startx; i < n - offset; i++) {
+                res[i][j] = count++;
+            }
+            // 模拟填充下行从右到左(左闭右开)
+            for (; j > starty; j--) {
+                res[i][j] = count++;
+            }
+            // 模拟填充左列从下到上(左闭右开)
+            for (; i > startx; i--) {
+                res[i][j] = count++;
+            }
+
+            // 第二圈开始的时候，起始位置要各自加1， 例如：第一圈起始位置是(0, 0)，第二圈起始位置是(1, 1)
+            startx++;
+            starty++;
+
+            // offset 控制每一圈里每一条边遍历的长度
+            offset += 1;
+        }
+
+        // 如果n为奇数的话，需要单独给矩阵最中间的位置赋值
+        if (n % 2) {
+            res[mid][mid] = count;
+        }
+        return res;
+    }
+};
+```
+
+
+* 时间复杂度 O(n^2): 模拟遍历二维矩阵的时间
+* 空间复杂度 O(1)
+
+
+## 
+
+其他语言版本
 
 ```python
+class Solution:
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        nums = [[0] * n for _ in range(n)]
+        startx, starty = 0, 0               # 起始点
+        loop, mid = n // 2, n // 2          # 迭代次数、n为奇数时，矩阵的中心点
+        count = 1                           # 计数
 
+        for offset in range(1, loop + 1) :      # 每循环一层偏移量加1，偏移量从1开始
+            for i in range(starty, n - offset) :    # 从左至右，左闭右开
+                nums[startx][i] = count
+                count += 1
+            for i in range(startx, n - offset) :    # 从上至下
+                nums[i][n - offset] = count
+                count += 1
+            for i in range(n - offset, starty, -1) : # 从右至左
+                nums[n - offset][i] = count
+                count += 1
+            for i in range(n - offset, startx, -1) : # 从下至上
+                nums[i][starty] = count
+                count += 1              
+            startx += 1         # 更新起始点
+            starty += 1
+
+        if n % 2 != 0 :			# n为奇数时，填充中心点
+            nums[mid][mid] = count 
+        return nums
 ```
