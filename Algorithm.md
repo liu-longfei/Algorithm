@@ -31,7 +31,7 @@
 例如在数组：1,2,3,4,7,9,10中查找元素2，如图所示：
 ![image](https://github.com/liu-longfei/Algorithm/assets/56292332/e8ed38ce-fe82-4a73-b696-0b2401127a8c)
 代码如下：（详细注释）
-```
+``` python
 // 版本一
 class Solution {
 public:
@@ -66,7 +66,7 @@ public:
 在数组：1,2,3,4,7,9,10中查找元素2，如图所示：（注意和方法一的区别）
 ![image](https://github.com/liu-longfei/Algorithm/assets/56292332/e6c8d6ef-bed6-43f4-aed1-67b05d7cf543)
 代码如下：（详细注释）
-```
+``` python
 // 版本二
 class Solution {
 public:
@@ -99,7 +99,7 @@ public:
 其他语言版本
 ### 其他语言版本
 （版本一）左闭右闭区间
-```
+``` 
 class Solution:
     def search(self, nums: List[int], target: int) -> int:
         left, right = 0, len(nums) - 1  # 定义target在左闭右闭的区间里，[left, right]
