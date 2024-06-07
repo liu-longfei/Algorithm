@@ -113,7 +113,7 @@ public:
 * [844.比较含退格的字符串(opens new window)](https://leetcode.cn/problems/backspace-string-compare/)
 * [977.有序数组的平方(opens new window)](https://leetcode.cn/problems/squares-of-a-sorted-array/)
 
-## C其他语言版本
+## 其他语言版本
 
 ### Python：
 
