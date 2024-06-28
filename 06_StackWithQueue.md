@@ -1,4 +1,4 @@
-# 232.用栈实现队列
+# 一、232.用栈实现队列
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/implement-queue-using-stacks/)
 
@@ -146,7 +146,7 @@ class MyQueue:
         """
         if self.empty():
             return None
-      
+    
         if self.stack_out:
             return self.stack_out.pop()
         else:
@@ -170,4 +170,285 @@ class MyQueue:
         """
         return not (self.stack_in or self.stack_out)
 
+```
+
+
+# 二、225. 用队列实现栈
+
+[力扣题目链接(opens new window)](https://leetcode.cn/problems/implement-stack-using-queues/)
+
+使用队列实现栈的下列操作：
+
+* push(x) -- 元素 x 入栈
+* pop() -- 移除栈顶元素
+* top() -- 获取栈顶元素
+* empty() -- 返回栈是否为空
+
+注意:
+
+* 你只能使用队列的基本操作-- 也就是 push to back, peek/pop from front, size, 和 is empty 这些操作是合法的。
+* 你所使用的语言也许不支持队列。 你可以使用 list 或者 deque（双端队列）来模拟一个队列 , 只要是标准的队列操作即可。
+* 你可以假设所有操作都是有效的（例如, 对一个空的栈不会调用 pop 或者 top 操作）。
+
+## 算法公开课
+
+《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[队列的基本操作！ | LeetCode：225. 用队列实现栈 **(opens new window)**](https://www.bilibili.com/video/BV1Fd4y1K7sm)，**[相信结合视频再看本篇题解，更有助于大家对本题的理解**。
+
+## 思路
+
+（这里要强调是单向队列）
+
+有的同学可能疑惑这种题目有什么实际工程意义，**其实很多算法题目主要是对知识点的考察和教学意义远大于其工程实践的意义，所以面试题也是这样！**
+
+刚刚做过[栈与队列：我用栈来实现队列怎么样？ **(opens new window)**](https://programmercarl.com/0232.%E7%94%A8%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97.html)的同学可能依然想着用一个输入队列，一个输出队列，就可以模拟栈的功能，仔细想一下还真不行！
+
+**队列模拟栈，其实一个队列就够了**，那么我们先说一说两个队列来实现栈的思路。
+
+**队列是先进先出的规则，把一个队列中的数据导入另一个队列中，数据的顺序并没有变，并没有变成先进后出的顺序。**
+
+所以用栈实现队列， 和用队列实现栈的思路还是不一样的，这取决于这两个数据结构的性质。
+
+但是依然还是要用两个队列来模拟栈，只不过没有输入和输出的关系，而是另一个队列完全用来备份的！
+
+如下面动画所示，**用两个队列que1和que2实现队列的功能，que2其实完全就是一个备份的作用**，把que1最后面的元素以外的元素都备份到que2，然后弹出最后面的元素，再把其他元素从que2导回que1。
+
+模拟的队列执行语句如下：
+
+```cpp
+queue.push(1);    
+queue.push(2);    
+queue.pop();   // 注意弹出的操作   
+queue.push(3);    
+queue.push(4);   
+queue.pop();  // 注意弹出的操作  
+queue.pop();  
+queue.pop();  
+queue.empty();  
+```
+
+https://code-thinking.cdn.bcebos.com/gifs/225.%E7%94%A8%E9%98%9F%E5%88%97%E5%AE%9E%E7%8E%B0%E6%A0%88.gif（图像链接）
+
+详细如代码注释所示：
+
+```cpp
+class MyStack {
+public:
+    queue<int> que1;
+    queue<int> que2; // 辅助队列，用来备份
+    /** Initialize your data structure here. */
+    MyStack() {
+
+    }
+
+    /** Push element x onto stack. */
+    void push(int x) {
+        que1.push(x);
+    }
+
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int size = que1.size();
+        size--;
+        while (size--) { // 将que1 导入que2，但要留下最后一个元素
+            que2.push(que1.front());
+            que1.pop();
+        }
+
+        int result = que1.front(); // 留下的最后一个元素就是要返回的值
+        que1.pop();
+        que1 = que2;            // 再将que2赋值给que1
+        while (!que2.empty()) { // 清空que2
+            que2.pop();
+        }
+        return result;
+    }
+
+    /** Get the top element. */
+    int top() {
+        return que1.back();
+    }
+
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return que1.empty();
+    }
+};
+```
+
+* 时间复杂度: pop为O(n)，其他为O(1)
+* 空间复杂度: O(n)
+
+## 优化
+
+其实这道题目就是用一个队列就够了。
+
+**一个队列在模拟栈弹出元素的时候只要将队列头部的元素（除了最后一个元素外） 重新添加到队列尾部，此时再去弹出元素就是栈的顺序了。**
+
+C++优化代码
+
+```cpp
+class MyStack {
+public:
+    queue<int> que;
+    /** Initialize your data structure here. */
+    MyStack() {
+
+    }
+    /** Push element x onto stack. */
+    void push(int x) {
+        que.push(x);
+    }
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int size = que.size();
+        size--;
+        while (size--) { // 将队列头部的元素（除了最后一个元素外） 重新添加到队列尾部
+            que.push(que.front());
+            que.pop();
+        }
+        int result = que.front(); // 此时弹出的元素顺序就是栈的顺序了
+        que.pop();
+        return result;
+    }
+
+    /** Get the top element. */
+    int top() {
+        return que.back();
+    }
+
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return que.empty();
+    }
+};
+```
+
+* 时间复杂度: pop为O(n)，其他为O(1)
+* 空间复杂度: O(n)
+
+## 其他语言版本
+
+### Python：
+
+```python
+from collections import deque
+
+class MyStack:
+
+    def __init__(self):
+        """
+        Python普通的Queue或SimpleQueue没有类似于peek的功能
+        也无法用索引访问，在实现top的时候较为困难。
+
+        用list可以，但是在使用pop(0)的时候时间复杂度为O(n)
+        因此这里使用双向队列，我们保证只执行popleft()和append()，因为deque可以用索引访问，可以实现和peek相似的功能
+
+        in - 存所有数据
+        out - 仅在pop的时候会用到
+        """
+        self.queue_in = deque()
+        self.queue_out = deque()
+
+    def push(self, x: int) -> None:
+        """
+        直接append即可
+        """
+        self.queue_in.append(x)
+
+
+    def pop(self) -> int:
+        """
+        1. 首先确认不空
+        2. 因为队列的特殊性，FIFO，所以我们只有在pop()的时候才会使用queue_out
+        3. 先把queue_in中的所有元素（除了最后一个），依次出列放进queue_out
+        4. 交换in和out，此时out里只有一个元素
+        5. 把out中的pop出来，即是原队列的最后一个
+      
+        tip：这不能像栈实现队列一样，因为另一个queue也是FIFO，如果执行pop()它不能像
+        stack一样从另一个pop()，所以干脆in只用来存数据，pop()的时候两个进行交换
+        """
+        if self.empty():
+            return None
+
+        for i in range(len(self.queue_in) - 1):
+            self.queue_out.append(self.queue_in.popleft())
+      
+        self.queue_in, self.queue_out = self.queue_out, self.queue_in    # 交换in和out，这也是为啥in只用来存
+        return self.queue_out.popleft()
+
+    def top(self) -> int:
+        """
+        写法一：
+        1. 首先确认不空
+        2. 我们仅有in会存放数据，所以返回第一个即可（这里实际上用到了栈）
+        写法二：
+        1. 首先确认不空
+        2. 因为队列的特殊性，FIFO，所以我们只有在pop()的时候才会使用queue_out
+        3. 先把queue_in中的所有元素（除了最后一个），依次出列放进queue_out
+        4. 交换in和out，此时out里只有一个元素
+        5. 把out中的pop出来，即是原队列的最后一个，并使用temp变量暂存
+        6. 把temp追加到queue_in的末尾
+        """
+        # 写法一：
+        # if self.empty():
+        #     return None
+      
+        # return self.queue_in[-1]    # 这里实际上用到了栈，因为直接获取了queue_in的末尾元素
+
+        # 写法二：
+        if self.empty():
+            return None
+
+        for i in range(len(self.queue_in) - 1):
+            self.queue_out.append(self.queue_in.popleft())
+      
+        self.queue_in, self.queue_out = self.queue_out, self.queue_in 
+        temp = self.queue_out.popleft()   
+        self.queue_in.append(temp)
+        return temp
+
+
+    def empty(self) -> bool:
+        """
+        因为只有in存了数据，只要判断in是不是有数即可
+        """
+        return len(self.queue_in) == 0
+
+```
+
+优化，使用一个队列实现
+
+```python
+class MyStack:
+
+    def __init__(self):
+        self.que = deque()
+
+    def push(self, x: int) -> None:
+        self.que.append(x)
+
+    def pop(self) -> int:
+        if self.empty():
+            return None
+        for i in range(len(self.que)-1):
+            self.que.append(self.que.popleft())
+        return self.que.popleft()
+
+    def top(self) -> int:
+        # 写法一：
+        # if self.empty():
+        #     return None
+        # return self.que[-1]
+
+        # 写法二：
+        if self.empty():
+            return None
+        for i in range(len(self.que)-1):
+            self.que.append(self.que.popleft())
+        temp = self.que.popleft()
+        self.que.append(temp)
+        return temp
+
+    def empty(self) -> bool:
+        return not self.que
 ```
