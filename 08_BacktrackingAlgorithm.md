@@ -155,8 +155,7 @@ void backtracking(参数) {
 
 今天是回溯算法的第一天，按照惯例Carl都是先概述一波，然后在开始讲解具体题目，没有接触过回溯法的同学刚学起来有点看不懂很正常，后面和具体题目结合起来会好一些。
 
-
-# 1、第77题. 组合
+# 一、第77题. 组合
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/combinations/)
 
@@ -495,6 +494,165 @@ class Solution:
 ```
 
 剪枝优化：
+
+```python
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        result = []  # 存放结果集
+        self.backtracking(n, k, 1, [], result)
+        return result
+    def backtracking(self, n, k, startIndex, path, result):
+        if len(path) == k:
+            result.append(path[:])
+            return
+        for i in range(startIndex, n - (k - len(path)) + 2):  # 优化的地方
+            path.append(i)  # 处理节点
+            self.backtracking(n, k, i + 1, path, result)
+            path.pop()  # 回溯，撤销处理的节点
+
+```
+
+
+# 二、77.组合优化
+
+## 算法公开课
+
+**[《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[组合问题的剪枝操作 **(opens new window)**](https://www.bilibili.com/video/BV1wi4y157er)，相信结合视频在看本篇题解，更有助于大家对本题的理解。**
+
+## 思路
+
+在[回溯算法：求组合问题！ **(opens new window)**](https://programmercarl.com/0077.%E7%BB%84%E5%90%88.html)中，我们通过回溯搜索法，解决了n个数中求k个数的组合问题。
+
+文中的回溯法是可以剪枝优化的，本篇我们继续来看一下题目77. 组合。
+
+链接：https://leetcode.cn/problems/combinations/
+
+**看本篇之前，需要先看**[回溯算法：求组合问题！ **(opens new window)**](https://programmercarl.com/0077.%E7%BB%84%E5%90%88.html)。
+
+大家先回忆一下[77. 组合]给出的回溯法的代码：
+
+```cpp
+class Solution {
+private:
+    vector<vector<int>> result; // 存放符合条件结果的集合
+    vector<int> path; // 用来存放符合条件结果
+    void backtracking(int n, int k, int startIndex) {
+        if (path.size() == k) {
+            result.push_back(path);
+            return;
+        }
+        for (int i = startIndex; i <= n; i++) {
+            path.push_back(i); // 处理节点
+            backtracking(n, k, i + 1); // 递归
+            path.pop_back(); // 回溯，撤销处理的节点
+        }
+    }
+public:
+    vector<vector<int>> combine(int n, int k) {
+        result.clear(); // 可以不写
+        path.clear();   // 可以不写
+        backtracking(n, k, 1);
+        return result;
+    }
+};
+```
+
+## 剪枝优化
+
+我们说过，回溯法虽然是暴力搜索，但也有时候可以有点剪枝优化一下的。
+
+在遍历的过程中有如下代码：
+
+```cpp
+for (int i = startIndex; i <= n; i++) {
+    path.push_back(i);
+    backtracking(n, k, i + 1);
+    path.pop_back();
+}
+```
+
+这个遍历的范围是可以剪枝优化的，怎么优化呢？
+
+来举一个例子，n = 4，k = 4的话，那么第一层for循环的时候，从元素2开始的遍历都没有意义了。 在第二层for循环，从元素3开始的遍历都没有意义了。
+
+这么说有点抽象，如图所示：
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210130194335207.png（图像链接）
+
+图中每一个节点（图中为矩形），就代表本层的一个for循环，那么每一层的for循环从第二个数开始遍历的话，都没有意义，都是无效遍历。
+
+**所以，可以剪枝的地方就在递归中每一层的for循环所选择的起始位置**。
+
+**如果for循环选择的起始位置之后的元素个数 已经不足 我们需要的元素个数了，那么就没有必要搜索了**。
+
+注意代码中i，就是for循环里选择的起始位置。
+
+```cpp
+for (int i = startIndex; i <= n; i++) {
+```
+
+接下来看一下优化过程如下：
+
+1. 已经选择的元素个数：path.size();
+2. 所需需要的元素个数为: k - path.size();
+3. 列表中剩余元素（n-i） >= 所需需要的元素个数（k - path.size()）
+4. 在集合n中至多要从该起始位置 : i <= n - (k - path.size()) + 1，开始遍历
+
+为什么有个+1呢，因为包括起始位置，我们要是一个左闭的集合。
+
+举个例子，n = 4，k = 3， 目前已经选取的元素为0（path.size为0），n - (k - 0) + 1 即 4 - ( 3 - 0) + 1 = 2。
+
+从2开始搜索都是合理的，可以是组合[2, 3, 4]。
+
+这里大家想不懂的话，建议也举一个例子，就知道是不是要+1了。
+
+所以优化之后的for循环是：
+
+```cpp
+for (int i = startIndex; i <= n - (k - path.size()) + 1; i++) // i为本次搜索的起始位置
+```
+
+优化后整体代码如下：
+
+```cpp
+class Solution {
+private:
+    vector<vector<int>> result;
+    vector<int> path;
+    void backtracking(int n, int k, int startIndex) {
+        if (path.size() == k) {
+            result.push_back(path);
+            return;
+        }
+        for (int i = startIndex; i <= n - (k - path.size()) + 1; i++) { // 优化的地方
+            path.push_back(i); // 处理节点
+            backtracking(n, k, i + 1);
+            path.pop_back(); // 回溯，撤销处理的节点
+        }
+    }
+public:
+
+    vector<vector<int>> combine(int n, int k) {
+        backtracking(n, k, 1);
+        return result;
+    }
+};
+```
+
+* 时间复杂度: O(n \* 2^n)
+* 空间复杂度: O(n)
+
+## 总结
+
+本篇我们针对求组合问题的回溯法代码做了剪枝优化，这个优化如果不画图的话，其实不好理解，也不好讲清楚。
+
+所以我依然是把整个回溯过程抽象为一棵树形结构，然后可以直观的看出，剪枝究竟是剪的哪里。
+
+**就酱，学到了就帮Carl转发一下吧，让更多的同学知道这里！**
+
+## 其他语言版本
+
+### Python
 
 ```python
 class Solution:
