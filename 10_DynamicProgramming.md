@@ -2,7 +2,7 @@
 
 [《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[动态规划理论基础 **(opens new window)**](https://www.bilibili.com/video/BV13Q4y197Wg)，**相信结合视频再看本篇题解，更有助于大家对本题的理解**。
 
-## 什么是动态规划
+## 一、什么是动态规划
 
 动态规划，英文：Dynamic Programming，简称DP，如果某一问题有很多重叠子问题，使用动态规划是最有效的。
 
@@ -116,8 +116,7 @@
 
 今天我们开始新的征程了，你准备好了么？
 
-
-# 一、509. 斐波那契数
+# 二、509. 斐波那契数
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/fibonacci-number/)
 
@@ -287,11 +286,11 @@ public:
 
 class Solution:
     def fib(self, n: int) -> int:
-     
+   
         # 排除 Corner Case
         if n == 0:
             return 0
-      
+  
         # 创建 dp table 
         dp = [0] * (n + 1)
 
@@ -304,7 +303,7 @@ class Solution:
 
             # 确定递归公式/状态转移公式
             dp[i] = dp[i - 1] + dp[i - 2]
-      
+  
         # 返回答案
         return dp[n]
 
@@ -318,14 +317,14 @@ class Solution:
     def fib(self, n: int) -> int:
         if n <= 1:
             return n
-      
+  
         dp = [0, 1]
-      
+  
         for i in range(2, n + 1):
             total = dp[0] + dp[1]
             dp[0] = dp[1]
             dp[1] = total
-      
+  
         return dp[1]
 
 
@@ -360,7 +359,7 @@ class Solution:
         return self.fib(n - 1) + self.fib(n - 2)
 ```
 
-# 二、70. 爬楼梯
+# 三、70. 爬楼梯
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/climbing-stairs/)
 
@@ -579,14 +578,14 @@ class Solution:
     def climbStairs(self, n: int) -> int:
         if n <= 1:
             return n
-      
+    
         dp = [0] * (n + 1)
         dp[1] = 1
         dp[2] = 2
-      
+    
         for i in range(3, n + 1):
             dp[i] = dp[i - 1] + dp[i - 2]
-      
+    
         return dp[n]
 
 ```
@@ -600,16 +599,16 @@ class Solution:
     def climbStairs(self, n: int) -> int:
         if n <= 1:
             return n
-      
+    
         dp = [0] * 3
         dp[1] = 1
         dp[2] = 2
-      
+    
         for i in range(3, n + 1):
             total = dp[1] + dp[2]
             dp[1] = dp[2]
             dp[2] = total
-      
+    
         return dp[2]
 
 ```
@@ -623,15 +622,15 @@ class Solution:
     def climbStairs(self, n: int) -> int:
         if n <= 1:
             return n
-      
+    
         prev1 = 1
         prev2 = 2
-      
+    
         for i in range(3, n + 1):
             total = prev1 + prev2
             prev1 = prev2
             prev2 = total
-      
+    
         return prev2
 
 
