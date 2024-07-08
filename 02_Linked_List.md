@@ -676,3 +676,138 @@ class Solution:
         return self.reverse(temp, cur)
 
 ```
+
+# 四、24. 两两交换链表中的节点
+
+[力扣题目链接(opens new window)](https://leetcode.cn/problems/swap-nodes-in-pairs/)
+
+给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+
+你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+https://code-thinking.cdn.bcebos.com/pics/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B9-%E9%A2%98%E6%84%8F.jpg（图像链接）
+
+## 算法公开课
+
+[《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[帮你把链表细节学清楚！ | LeetCode：24. 两两交换链表中的节点 **(opens new window)**](https://www.bilibili.com/video/BV1YT411g7br)，**相信结合视频再看本篇题解，更有助于大家对本题的理解**。
+
+## 思路
+
+这道题目正常模拟就可以了。
+
+建议使用虚拟头结点，这样会方便很多，要不然每次针对头结点（没有前一个指针指向头结点），还要单独处理。
+
+对虚拟头结点的操作，还不熟悉的话，可以看这篇[链表：听说用虚拟头节点会方便很多？ **(opens new window)**](https://programmercarl.com/0203.%E7%A7%BB%E9%99%A4%E9%93%BE%E8%A1%A8%E5%85%83%E7%B4%A0.html)。
+
+接下来就是交换相邻两个元素了，**此时一定要画图，不画图，操作多个指针很容易乱，而且要操作的先后顺序**
+
+初始时，cur指向虚拟头结点，然后进行如下三步：
+
+https://code-thinking.cdn.bcebos.com/pics/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B91.png（图像链接）
+
+操作之后，链表如下：
+
+https://code-thinking.cdn.bcebos.com/pics/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B92.png（图像链接）
+
+看这个可能就更直观一些了：
+
+https://code-thinking.cdn.bcebos.com/pics/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B93.png（图像链接）
+
+对应的C++代码实现如下： （注释中详细和如上图中的三步做对应）
+
+```cpp
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        ListNode* dummyHead = new ListNode(0); // 设置一个虚拟头结点
+        dummyHead->next = head; // 将虚拟头结点指向head，这样方便后面做删除操作
+        ListNode* cur = dummyHead;
+        while(cur->next != nullptr && cur->next->next != nullptr) {
+            ListNode* tmp = cur->next; // 记录临时节点
+            ListNode* tmp1 = cur->next->next->next; // 记录临时节点
+
+            cur->next = cur->next->next;    // 步骤一
+            cur->next->next = tmp;          // 步骤二
+            cur->next->next->next = tmp1;   // 步骤三
+
+            cur = cur->next->next; // cur移动两位，准备下一轮交换
+        }
+        ListNode* result = dummyHead->next;
+        delete dummyHead;
+        return result;
+    }
+};
+```
+
+* 时间复杂度：O(n)
+* 空间复杂度：O(1)
+
+## 拓展
+
+**这里还是说一下，大家不必太在意力扣上执行用时，打败多少多少用户，这个统计不准确的。**
+
+做题的时候自己能分析出来时间复杂度就可以了，至于力扣上执行用时，大概看一下就行。
+
+上面的代码我第一次提交执行用时8ms，打败6.5%的用户，差点吓到我了。
+
+心想应该没有更好的方法了吧，也就 $O(n)$ 的时间复杂度，重复提交几次，这样了：
+
+https://code-thinking.cdn.bcebos.com/pics/24.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B9.png（图像链接）
+
+力扣上的统计如果两份代码是 100ms 和 300ms的耗时，其实是需要注意的。
+
+如果一个是 4ms 一个是 12ms，看上去好像是一个打败了80%，一个打败了20%，其实是没有差别的。 只不过是力扣上统计的误差而已。
+
+## 其他语言版本
+
+### Python：
+
+```python
+# 递归版本
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head is None or head.next is None:
+            return head
+
+        # 待翻转的两个node分别是pre和cur
+        pre = head
+        cur = head.next
+        next = head.next.next
+      
+        cur.next = pre  # 交换
+        pre.next = self.swapPairs(next) # 将以next为head的后续链表两两交换
+       
+        return cur
+```
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def swapPairs(self, head: ListNode) -> ListNode:
+        dummy_head = ListNode(next=head)
+        current = dummy_head
+      
+        # 必须有cur的下一个和下下个才能交换，否则说明已经交换结束了
+        while current.next and current.next.next:
+            temp = current.next # 防止节点修改
+            temp1 = current.next.next.next
+          
+            current.next = current.next.next
+            current.next.next = temp
+            temp.next = temp1
+            current = current.next.next
+        return dummy_head.next
+
+```
+
