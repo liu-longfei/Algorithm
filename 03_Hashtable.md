@@ -1,4 +1,126 @@
-# 一、242.有效的字母异位词
+# 一、哈希表理论基础
+
+## 哈希表
+
+首先什么是哈希表，哈希表（英文名字为Hash table，国内也有一些算法书籍翻译为散列表，大家看到这两个名称知道都是指hash table就可以了）。
+
+> 哈希表是根据关键码的值而直接进行访问的数据结构。
+
+这么官方的解释可能有点懵，其实直白来讲其实数组就是一张哈希表。
+
+哈希表中关键码就是数组的索引下标，然后通过下标直接访问数组中的元素，如下图所示：
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210104234805168.png（图像链接）
+
+那么哈希表能解决什么问题呢，**一般哈希表都是用来快速判断一个元素是否出现集合里。**
+
+例如要查询一个名字是否在这所学校里。
+
+要枚举的话时间复杂度是O(n)，但如果使用哈希表的话， 只需要O(1)就可以做到。
+
+我们只需要初始化把这所学校里学生的名字都存在哈希表里，在查询的时候通过索引直接就可以知道这位同学在不在这所学校里了。
+
+将学生姓名映射到哈希表上就涉及到了**hash function ，也就是哈希函数**。
+
+## 哈希函数
+
+哈希函数，把学生的姓名直接映射为哈希表上的索引，然后就可以通过查询索引下标快速知道这位同学是否在这所学校里了。
+
+哈希函数如下图所示，通过hashCode把名字转化为数值，一般hashcode是通过特定编码方式，可以将其他数据格式转化为不同的数值，这样就把学生名字映射为哈希表上的索引数字了。
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/2021010423484818.png（图像链接）
+
+如果hashCode得到的数值大于 哈希表的大小了，也就是大于tableSize了，怎么办呢？
+
+此时为了保证映射出来的索引数值都落在哈希表上，我们会在再次对数值做一个取模的操作，这样我们就保证了学生姓名一定可以映射到哈希表上了。
+
+此时问题又来了，哈希表我们刚刚说过，就是一个数组。
+
+如果学生的数量大于哈希表的大小怎么办，此时就算哈希函数计算的再均匀，也避免不了会有几位学生的名字同时映射到哈希表 同一个索引下标的位置。
+
+接下来**哈希碰撞**登场
+
+### 哈希碰撞
+
+如图所示，小李和小王都映射到了索引下标 1 的位置，**这一现象叫做哈希碰撞**。
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/2021010423494884.png（图像链接）
+
+一般哈希碰撞有两种解决方法， 拉链法和线性探测法。
+
+### 拉链法
+
+刚刚小李和小王在索引1的位置发生了冲突，发生冲突的元素都被存储在链表中。 这样我们就可以通过索引找到小李和小王了
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210104235015226.png（图像链接）
+
+（数据规模是dataSize， 哈希表的大小为tableSize）
+
+其实拉链法就是要选择适当的哈希表的大小，这样既不会因为数组空值而浪费大量内存，也不会因为链表太长而在查找上浪费太多时间。
+
+### 线性探测法
+
+使用线性探测法，一定要保证tableSize大于dataSize。 我们需要依靠哈希表中的空位来解决碰撞问题。
+
+例如冲突的位置，放了小李，那么就向下找一个空位放置小王的信息。所以要求tableSize一定要大于dataSize ，要不然哈希表上就没有空置的位置来存放 冲突的数据了。如图所示：
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210104235109950.png（图像链接）
+
+其实关于哈希碰撞还有非常多的细节，感兴趣的同学可以再好好研究一下，这里我就不再赘述了。
+
+## 常见的三种哈希结构
+
+当我们想使用哈希法来解决问题的时候，我们一般会选择如下三种数据结构。
+
+* 数组
+* set （集合）
+* map(映射)
+
+这里数组就没啥可说的了，我们来看一下set。
+
+在C++中，set 和 map 分别提供以下三种数据结构，其底层实现以及优劣如下表所示：
+
+
+| 集合                | 底层实现 | 是否有序 | 数值是否可以重复 | 能否更改数值 | 查询效率 | 增删效率 |
+| ------------------- | -------- | -------- | ---------------- | ------------ | -------- | -------- |
+| std::set            | 红黑树   | 有序     | 否               | 否           | O(log n) | O(log n) |
+| std::multiset       | 红黑树   | 有序     | 是               | 否           | O(logn)  | O(logn)  |
+| std::unordered\_set | 哈希表   | 无序     | 否               | 否           | O(1)     | O(1)     |
+
+std::unordered\_set底层实现为哈希表，std::set 和std::multiset 的底层实现是红黑树，红黑树是一种平衡二叉搜索树，所以key值是有序的，但key不可以修改，改动key值会导致整棵树的错乱，所以只能删除和增加。
+
+
+| 映射                | 底层实现 | 是否有序 | 数值是否可以重复 | 能否更改数值 | 查询效率 | 增删效率 |
+| ------------------- | -------- | -------- | ---------------- | ------------ | -------- | -------- |
+| std::map            | 红黑树   | key有序  | key不可重复      | key不可修改  | O(logn)  | O(logn)  |
+| std::multimap       | 红黑树   | key有序  | key可重复        | key不可修改  | O(log n) | O(log n) |
+| std::unordered\_map | 哈希表   | key无序  | key不可重复      | key不可修改  | O(1)     | O(1)     |
+
+std::unordered\_map 底层实现为哈希表，std::map 和std::multimap 的底层实现是红黑树。同理，std::map 和std::multimap 的key也是有序的（这个问题也经常作为面试题，考察对语言容器底层的理解）。
+
+当我们要使用集合来解决哈希问题的时候，优先使用unordered\_set，因为它的查询和增删效率是最优的，如果需要集合是有序的，那么就用set，如果要求不仅有序还要有重复数据的话，那么就用multiset。
+
+那么再来看一下map ，在map 是一个key value 的数据结构，map中，对key是有限制，对value没有限制的，因为key的存储方式使用红黑树实现的。
+
+其他语言例如：java里的HashMap ，TreeMap 都是一样的原理。可以灵活贯通。
+
+虽然std::set和std::multiset 的底层实现基于红黑树而非哈希表，它们通过红黑树来索引和存储数据。不过给我们的使用方式，还是哈希法的使用方式，即依靠键（key）来访问值（value）。所以使用这些数据结构来解决映射问题的方法，我们依然称之为哈希法。std::map也是一样的道理。
+
+这里在说一下，一些C++的经典书籍上 例如STL源码剖析，说到了hash\_set hash\_map，这个与unordered\_set，unordered\_map又有什么关系呢？
+
+实际上功能都是一样一样的， 但是unordered\_set在C++11的时候被引入标准库了，而hash\_set并没有，所以建议还是使用unordered\_set比较好，这就好比一个是官方认证的，hash\_set，hash\_map 是C++11标准之前民间高手自发造的轮子。
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210104235134572.png（图像链接）
+
+## 总结
+
+总结一下，**当我们遇到了要快速判断一个元素是否出现集合里的时候，就要考虑哈希法**。
+
+但是哈希法也是**牺牲了空间换取了时间**，因为我们要使用额外的数组，set或者是map来存放数据，才能实现快速的查找。
+
+如果在做面试题目的时候遇到需要判断一个元素是否出现过的场景也应该第一时间想到哈希法！
+
+# 二、242.有效的字母异位词
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/valid-anagram/)
 
@@ -123,7 +245,7 @@ class Solution(object):
         return a_count == b_count
 ```
 
-# 二、349. 两个数组的交集
+# 三、349. 两个数组的交集
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/intersection-of-two-arrays/)
 
@@ -241,14 +363,14 @@ class Solution:
         table = {}
         for num in nums1:
             table[num] = table.get(num, 0) + 1
-    
+  
         # 使用集合存储结果
         res = set()
         for num in nums2:
             if num in table:
                 res.add(num)
                 del table[num]
-    
+  
         return list(res)
 ```
 
@@ -281,8 +403,7 @@ class Solution:
 
 ```
 
-
-# 三、第202题. 快乐数
+# 四、第202题. 快乐数
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/happy-number/)
 
@@ -294,12 +415,12 @@ class Solution:
 
 **示例：**
 
-输入：19   
-输出：true   
-解释：   
-1^2 + 9^2 = 82   
-8^2 + 2^2 = 68   
-6^2 + 8^2 = 100   
+输入：19
+输出：true
+解释：
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
 1^2 + 0^2 + 0^2 = 1
 
 ## 思路
@@ -360,14 +481,14 @@ public:
 
 ```python
 class Solution:
-    def isHappy(self, n: int) -> bool:      
+    def isHappy(self, n: int) -> bool:  
         record = set()
 
         while True:
             n = self.get_sum(n)
             if n == 1:
                 return True
-          
+    
             # 如果中间结果重复出现，说明陷入死循环了，该数不是快乐数
             if n in record:
                 return False
@@ -420,7 +541,7 @@ class Solution:
 
 ```python
 class Solution:
-   def isHappy(self, n: int) -> bool:      
+   def isHappy(self, n: int) -> bool:  
        slow = n
        fast = n
        while self.get_sum(fast) != 1 and self.get_sum(self.get_sum(fast)):
@@ -465,7 +586,7 @@ class Solution:
        return True
 ```
 
-# 四、1. 两数之和
+# 五、1. 两数之和
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/two-sum/)
 
@@ -608,7 +729,7 @@ class Solution:
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         #创建一个集合来存储我们目前看到的数字
-        seen = set()           
+        seen = set()       
         for i, num in enumerate(nums):
             complement = target - num
             if complement in seen:
@@ -623,7 +744,7 @@ class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         # 对输入列表进行排序
         nums_sorted = sorted(nums)
-      
+  
         # 使用双指针
         left = 0
         right = len(nums_sorted) - 1
@@ -653,156 +774,5 @@ class Solution:
             for j in range(i+1, len(nums)):
                 if nums[i] + nums[j] == target:
                     return [i,j]
-```
-
-# 五、第454题.四数相加II
-
-[力扣题目链接(opens new window)](https://leetcode.cn/problems/4sum-ii/)
-
-给定四个包含整数的数组列表 A , B , C , D ,计算有多少个元组 (i, j, k, l) ，使得 A[i] + B[j] + C[k] + D[l] = 0。
-
-为了使问题简单化，所有的 A, B, C, D 具有相同的长度 N，且 0 ≤ N ≤ 500 。所有整数的范围在 -2^28 到 2^28 - 1 之间，最终结果不会超过 2^31 - 1 。
-
-**例如:**
-
-输入:
-
-* A = [ 1, 2]
-* B = [-2,-1]
-* C = [-1, 2]
-* D = [ 0, 2]
-
-输出:
-
-2
-
-**解释:**
-
-两个元组如下:
-
-1. (0, 0, 0, 1) -> A[0] + B[0] + C[0] + D[1] = 1 + (-2) + (-1) + 2 = 0
-2. (1, 1, 0, 0) -> A[1] + B[1] + C[0] + D[0] = 2 + (-1) + (-1) + 0 = 0
-
-## 算法公开课
-
-[《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[学透哈希表，map使用有技巧！LeetCode：454.四数相加II **(opens new window)**](https://www.bilibili.com/video/BV1Md4y1Q7Yh)，**相信结合视频再看本篇题解，更有助于大家对本题的理解**。
-
-## 思路
-
-本题乍眼一看好像和[0015.三数之和 **(opens new window)**](https://programmercarl.com/0015.%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C.html)，[0018.四数之和 **(opens new window)**](https://programmercarl.com/0018.%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C.html)差不多，其实差很多。
-
-**本题是使用哈希法的经典题目，而[0015.三数之和 **(opens new window)**](https://programmercarl.com/0015.%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C.html)，[0018.四数之和 **(opens new window)**](https://programmercarl.com/0018.%E5%9B%9B%E6%95%B0%E4%B9%8B%E5%92%8C.html)并不合适使用哈希法**，因为三数之和和四数之和这两道题目使用哈希法在不超时的情况下做到对结果去重是很困难的，很有多细节需要处理。
-
-**而这道题目是四个独立的数组，只要找到A[i] + B[j] + C[k] + D[l] = 0就可以，不用考虑有重复的四个元素相加等于0的情况，所以相对于题目18. 四数之和，题目15.三数之和，还是简单了不少！**
-
-如果本题想难度升级：就是给出一个数组（而不是四个数组），在这里找出四个元素相加等于0，答案中不可以包含重复的四元组，大家可以思考一下，后续的文章我也会讲到的。
-
-本题解题步骤：
-
-1. 首先定义 一个unordered\_map，key放a和b两数之和，value 放a和b两数之和出现的次数。
-2. 遍历大A和大B数组，统计两个数组元素之和，和出现的次数，放到map中。
-3. 定义int变量count，用来统计 a+b+c+d = 0 出现的次数。
-4. 再遍历大C和大D数组，找到如果 0-(c+d) 在map中出现过的话，就用count把map中key对应的value也就是出现次数统计出来。
-5. 最后返回统计值 count 就可以了
-
-C++代码:
-
-```cpp
-class Solution {
-public:
-    int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
-        unordered_map<int, int> umap; //key:a+b的数值，value:a+b数值出现的次数
-        // 遍历大A和大B数组，统计两个数组元素之和，和出现的次数，放到map中
-        for (int a : A) {
-            for (int b : B) {
-                umap[a + b]++;
-            }
-        }
-        int count = 0; // 统计a+b+c+d = 0 出现的次数
-        // 再遍历大C和大D数组，找到如果 0-(c+d) 在map中出现过的话，就把map中key对应的value也就是出现次数统计出来。
-        for (int c : C) {
-            for (int d : D) {
-                if (umap.find(0 - (c + d)) != umap.end()) {
-                    count += umap[0 - (c + d)];
-                }
-            }
-        }
-        return count;
-    }
-};
-
-```
-
-* 时间复杂度: O(n^2)
-* 空间复杂度: O(n^2)，最坏情况下A和B的值各不相同，相加产生的数字个数为 n^2
-
-## 其他语言版本
-
-### Python：
-
-（版本一） 使用字典
-
-```python
-class Solution(object):
-    def fourSumCount(self, nums1, nums2, nums3, nums4):
-        # 使用字典存储nums1和nums2中的元素及其和
-        hashmap = dict()
-        for n1 in nums1:
-            for n2 in nums2:
-                if n1 + n2 in hashmap:
-                    hashmap[n1+n2] += 1
-                else:
-                    hashmap[n1+n2] = 1
-      
-        # 如果 -(n1+n2) 存在于nums3和nums4, 存入结果
-        count = 0
-        for n3 in nums3:
-            for n4 in nums4:
-                key = - n3 - n4
-                if key in hashmap:
-                    count += hashmap[key]
-        return count
- 
-
-```
-
-（版本二） 使用字典
-
-```python
-class Solution(object):
-    def fourSumCount(self, nums1, nums2, nums3, nums4):
-        # 使用字典存储nums1和nums2中的元素及其和
-        hashmap = dict()
-        for n1 in nums1:
-            for n2 in nums2:
-                hashmap[n1+n2] = hashmap.get(n1+n2, 0) + 1
-      
-        # 如果 -(n1+n2) 存在于nums3和nums4, 存入结果
-        count = 0
-        for n3 in nums3:
-            for n4 in nums4:
-                key = - n3 - n4
-                if key in hashmap:
-                    count += hashmap[key]
-        return count
- 
- 
-
-```
-
-（版本三）使用 defaultdict
-
-```python
-from collections import defaultdict 
-class Solution:
-    def fourSumCount(self, nums1: list, nums2: list, nums3: list, nums4: list) -> int:
-        rec, cnt = defaultdict(lambda : 0), 0
-        for i in nums1:
-            for j in nums2:
-                rec[i+j] += 1
-        for i in nums3:
-            for j in nums4:
-                cnt += rec.get(-(i+j), 0) 
-        return cnt
 ```
 
