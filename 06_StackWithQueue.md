@@ -1,4 +1,4 @@
-# 栈与队列理论基础
+# 一、栈与队列理论基础
 
 我想栈和队列的原理大家应该很熟悉了，队列是先进先出，栈是先进后出。
 
@@ -73,7 +73,8 @@ std::queue<int, std::list<int>> third; // 定义以list为底层容器的队列
 
 我这里讲的都是C++ 语言中的情况， 使用其他语言的同学也要思考栈与队列的底层实现问题， 不要对数据结构的使用浅尝辄止，而要深挖其内部原理，才能夯实基础。
 
-# 一、232.用栈实现队列
+
+# 二、232.用栈实现队列
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/implement-queue-using-stacks/)
 
@@ -221,7 +222,7 @@ class MyQueue:
         """
         if self.empty():
             return None
-    
+  
         if self.stack_out:
             return self.stack_out.pop()
         else:
@@ -247,8 +248,7 @@ class MyQueue:
 
 ```
 
-
-# 二、225. 用队列实现栈
+# 三、225. 用队列实现栈
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/implement-stack-using-queues/)
 
@@ -290,10 +290,10 @@ class MyQueue:
 模拟的队列执行语句如下：
 
 ```cpp
-queue.push(1);    
-queue.push(2);    
+queue.push(1);  
+queue.push(2);  
 queue.pop();   // 注意弹出的操作   
-queue.push(3);    
+queue.push(3);  
 queue.push(4);   
 queue.pop();  // 注意弹出的操作  
 queue.pop();  
@@ -438,7 +438,7 @@ class MyStack:
         3. 先把queue_in中的所有元素（除了最后一个），依次出列放进queue_out
         4. 交换in和out，此时out里只有一个元素
         5. 把out中的pop出来，即是原队列的最后一个
-      
+    
         tip：这不能像栈实现队列一样，因为另一个queue也是FIFO，如果执行pop()它不能像
         stack一样从另一个pop()，所以干脆in只用来存数据，pop()的时候两个进行交换
         """
@@ -447,7 +447,7 @@ class MyStack:
 
         for i in range(len(self.queue_in) - 1):
             self.queue_out.append(self.queue_in.popleft())
-      
+    
         self.queue_in, self.queue_out = self.queue_out, self.queue_in    # 交换in和out，这也是为啥in只用来存
         return self.queue_out.popleft()
 
@@ -467,7 +467,7 @@ class MyStack:
         # 写法一：
         # if self.empty():
         #     return None
-      
+    
         # return self.queue_in[-1]    # 这里实际上用到了栈，因为直接获取了queue_in的末尾元素
 
         # 写法二：
@@ -476,7 +476,7 @@ class MyStack:
 
         for i in range(len(self.queue_in) - 1):
             self.queue_out.append(self.queue_in.popleft())
-      
+    
         self.queue_in, self.queue_out = self.queue_out, self.queue_in 
         temp = self.queue_out.popleft()   
         self.queue_in.append(temp)
@@ -527,3 +527,188 @@ class MyStack:
     def empty(self) -> bool:
         return not self.que
 ```
+
+
+# 四、20. 有效的括号
+
+[力扣题目链接(opens new window)](https://leetcode.cn/problems/valid-parentheses/)
+
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
+
+有效字符串需满足：
+
+* 左括号必须用相同类型的右括号闭合。
+* 左括号必须以正确的顺序闭合。
+* 注意空字符串可被认为是有效字符串。
+
+示例 1:
+
+* 输入: "()"
+* 输出: true
+
+示例 2:
+
+* 输入: "()[]{}"
+* 输出: true
+
+示例 3:
+
+* 输入: "(]"
+* 输出: false
+
+示例 4:
+
+* 输入: "([)]"
+* 输出: false
+
+示例 5:
+
+* 输入: "{[]}"
+* 输出: true
+
+## 算法公开课
+
+[《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[栈的拿手好戏！| LeetCode：20. 有效的括号 **(opens new window)**](https://www.bilibili.com/video/BV1AF411w78g)，**相信结合视频再看本篇题解，更有助于大家对本题的理解**。
+
+## 思路
+
+### 题外话
+
+**括号匹配是使用栈解决的经典问题。**
+
+题意其实就像我们在写代码的过程中，要求括号的顺序是一样的，有左括号，相应的位置必须要有右括号。
+
+如果还记得编译原理的话，编译器在 词法分析的过程中处理括号、花括号等这个符号的逻辑，也是使用了栈这种数据结构。
+
+再举个例子，linux系统中，cd这个进入目录的命令我们应该再熟悉不过了。
+
+```text
+cd a/b/c/../../
+```
+
+这个命令最后进入a目录，系统是如何知道进入了a目录呢 ，这就是栈的应用（其实可以出一道相应的面试题了）
+
+所以栈在计算机领域中应用是非常广泛的。
+
+有的同学经常会想学的这些数据结构有什么用，也开发不了什么软件，大多数同学说的软件应该都是可视化的软件例如APP、网站之类的，那都是非常上层的应用了，底层很多功能的实现都是基础的数据结构和算法。
+
+**所以数据结构与算法的应用往往隐藏在我们看不到的地方！**
+
+这里我就不过多展开了，先来看题。
+
+### 进入正题
+
+由于栈结构的特殊性，非常适合做对称匹配类的题目。
+
+首先要弄清楚，字符串里的括号不匹配有几种情况。
+
+**一些同学，在面试中看到这种题目上来就开始写代码，然后就越写越乱。**
+
+建议在写代码之前要分析好有哪几种不匹配的情况，如果不在动手之前分析好，写出的代码也会有很多问题。
+
+先来分析一下 这里有三种不匹配的情况，
+
+1. 第一种情况，字符串里左方向的括号多余了 ，所以不匹配
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/2020080915505387.png（图像链接）
+
+2. 第二种情况，括号没有多余，但是 括号的类型没有匹配上。
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20200809155107397.png（图像链接）
+
+3. 第三种情况，字符串里右方向的括号多余了，所以不匹配。
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20200809155115779.png（图像链接）
+
+我们的代码只要覆盖了这三种不匹配的情况，就不会出问题，可以看出 动手之前分析好题目的重要性。
+
+动画如下：
+
+https://code-thinking.cdn.bcebos.com/gifs/20.%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7.gif（图像链接）
+
+第一种情况：已经遍历完了字符串，但是栈不为空，说明有相应的左括号没有右括号来匹配，所以return false
+
+第二种情况：遍历字符串匹配的过程中，发现栈里没有要匹配的字符。所以return false
+
+第三种情况：遍历字符串匹配的过程中，栈已经为空了，没有匹配的字符了，说明右括号没有找到对应的左括号return false
+
+那么什么时候说明左括号和右括号全都匹配了呢，就是字符串遍历完之后，栈是空的，就说明全都匹配了。
+
+分析完之后，代码其实就比较好写了，
+
+但还有一些技巧，在匹配左括号的时候，右括号先入栈，就只需要比较当前元素和栈顶相不相等就可以了，比左括号先入栈代码实现要简单的多了！
+
+实现C++代码如下：
+
+```cpp
+class Solution {
+public:
+    bool isValid(string s) {
+        if (s.size() % 2 != 0) return false; // 如果s的长度为奇数，一定不符合要求
+        stack<char> st;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == '(') st.push(')');
+            else if (s[i] == '{') st.push('}');
+            else if (s[i] == '[') st.push(']');
+            // 第三种情况：遍历字符串匹配的过程中，栈已经为空了，没有匹配的字符了，说明右括号没有找到对应的左括号 return false
+            // 第二种情况：遍历字符串匹配的过程中，发现栈里没有我们要匹配的字符。所以return false
+            else if (st.empty() || st.top() != s[i]) return false;
+            else st.pop(); // st.top() 与 s[i]相等，栈弹出元素
+        }
+        // 第一种情况：此时我们已经遍历完了字符串，但是栈不为空，说明有相应的左括号没有右括号来匹配，所以return false，否则就return true
+        return st.empty();
+    }
+};
+
+```
+
+* 时间复杂度: O(n)
+* 空间复杂度: O(n)
+
+技巧性的东西没有固定的学习方法，还是要多看多练，自己灵活运用了。
+
+## 其他语言版本
+
+### Python：
+
+```python
+# 方法一，仅使用栈，更省空间
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+      
+        for item in s:
+            if item == '(':
+                stack.append(')')
+            elif item == '[':
+                stack.append(']')
+            elif item == '{':
+                stack.append('}')
+            elif not stack or stack[-1] != item:
+                return False
+            else:
+                stack.pop()
+      
+        return True if not stack else False
+```
+
+```python
+# 方法二，使用字典
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        mapping = {
+            '(': ')',
+            '[': ']',
+            '{': '}'
+        }
+        for item in s:
+            if item in mapping.keys():
+                stack.append(mapping[item])
+            elif not stack or stack[-1] != item: 
+                return False
+            else: 
+                stack.pop()
+        return True if not stack else False
+```
+
