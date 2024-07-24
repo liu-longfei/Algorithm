@@ -1,3 +1,9 @@
+# 一、回溯算法理论基础
+
+## 题目分类
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210219192050666.png（图像链接）
+
 ## 算法公开课
 
 **[《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[带你学透回溯算法（理论篇） **(opens new window)**](https://www.bilibili.com/video/BV1cy4y167mM/)，相信结合视频再看本篇题解，更有助于大家对本题的理解。**
@@ -155,7 +161,7 @@ void backtracking(参数) {
 
 今天是回溯算法的第一天，按照惯例Carl都是先概述一波，然后在开始讲解具体题目，没有接触过回溯法的同学刚学起来有点看不懂很正常，后面和具体题目结合起来会好一些。
 
-# 一、第77题. 组合
+# 二、第77题. 组合
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/combinations/)
 
@@ -512,8 +518,7 @@ class Solution:
 
 ```
 
-
-# 二、77.组合优化
+# 三、77.组合优化
 
 ## 算法公开课
 
