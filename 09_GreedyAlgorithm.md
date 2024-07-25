@@ -1,3 +1,9 @@
+# 一、关于贪心算法，你该了解这些！
+
+题目分类大纲如下：
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210917104315.png（图像链接）
+
 ## 算法公开课
 
 [《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[贪心算法理论基础！ **(opens new window)**](https://www.bilibili.com/video/BV1WK4y1R71x/),**相信结合视频再看本篇题解，更有助于大家对本题的理解**。
@@ -31,8 +37,6 @@
 有同学问了如何验证可不可以用贪心算法呢？
 
 **最好用的策略就是举反例，如果想不到反例，那么就试一试贪心吧**。
-
-
 
 可有同学认为手动模拟，举例子得出的结论不靠谱，想要严格的数学证明。
 
@@ -78,8 +82,7 @@
 
 最后给出贪心的一般解题步骤，大家可以发现这个解题步骤也是比较抽象的，不像是二叉树，回溯算法，给出了那么具体的解题套路和模板。
 
-
-# 一、455.分发饼干
+# 二、455.分发饼干
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/assign-cookies/)
 
@@ -243,7 +246,7 @@ class Solution:
 
 ```
 
-二、376. 摆动序列
+# 三、376. 摆动序列
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/wiggle-subsequence/)
 
@@ -571,16 +574,204 @@ class Solution:
     def wiggleMaxLength(self, nums):
         if len(nums) <= 1:
             return len(nums)  # 如果数组长度为0或1，则返回数组长度
-      
+    
         up = down = 1  # 记录上升和下降摆动序列的最大长度
         for i in range(1, len(nums)):
             if nums[i] > nums[i-1]:
                 up = down + 1  # 如果当前数比前一个数大，则可以形成一个上升峰值
             elif nums[i] < nums[i-1]:
                 down = up + 1  # 如果当前数比前一个数小，则可以形成一个下降峰值
-      
+    
         return max(up, down)  # 返回上升和下降摆动序列的最大长度
 
 
 ```
 
+
+# 四、53. 最大子序和
+
+[力扣题目链接(opens new window)](https://leetcode.cn/problems/maximum-subarray/)
+
+给定一个整数数组 nums，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+
+示例:
+
+* 输入: [-2,1,-3,4,-1,2,1,-5,4]
+* 输出: 6
+* 解释:  连续子数组  [4,-1,2,1] 的和最大，为  6。
+
+## 算法公开课
+
+[《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：[贪心算法的巧妙需要慢慢体会！LeetCode：53. 最大子序和 **(opens new window)**](https://www.bilibili.com/video/BV1aY4y1Z7ya)，**相信结合视频在看本篇题解，更有助于大家对本题的理解**。
+
+## 思路
+
+### 暴力解法
+
+暴力解法的思路，第一层 for 就是设置起始位置，第二层 for 循环遍历数组寻找最大值
+
+```cpp
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int result = INT32_MIN;
+        int count = 0;
+        for (int i = 0; i < nums.size(); i++) { // 设置起始位置
+            count = 0;
+            for (int j = i; j < nums.size(); j++) { // 每次从起始位置i开始遍历寻找最大值
+                count += nums[j];
+                result = count > result ? count : result;
+            }
+        }
+        return result;
+    }
+};
+```
+
+* 时间复杂度：O(n^2)
+* 空间复杂度：O(1)
+
+以上暴力的解法 C++勉强可以过，其他语言就不确定了。
+
+### 贪心解法
+
+**贪心贪的是哪里呢？**
+
+如果 -2 1 在一起，计算起点的时候，一定是从 1 开始计算，因为负数只会拉低总和，这就是贪心贪的地方！
+
+局部最优：当前“连续和”为负数的时候立刻放弃，从下一个元素重新计算“连续和”，因为负数加上下一个元素 “连续和”只会越来越小。
+
+全局最优：选取最大“连续和”
+
+**局部最优的情况下，并记录最大的“连续和”，可以推出全局最优**。
+
+从代码角度上来讲：遍历 nums，从头开始用 count 累积，如果 count 一旦加上 nums[i]变为负数，那么就应该从 nums[i+1]开始从 0 累积 count 了，因为已经变为负数的 count，只会拖累总和。
+
+**这相当于是暴力解法中的不断调整最大子序和区间的起始位置**。
+
+**那有同学问了，区间终止位置不用调整么？ 如何才能得到最大“连续和”呢？**
+
+区间的终止位置，其实就是如果 count 取到最大值了，及时记录下来了。例如如下代码：
+
+```text
+if (count > result) result = count;
+```
+
+**这样相当于是用 result 记录最大子序和区间和（变相的算是调整了终止位置）**。
+
+如动画所示：
+
+https://code-thinking.cdn.bcebos.com/gifs/53.%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%92%8C.gif（图像链接）
+
+红色的起始位置就是贪心每次取 count 为正数的时候，开始一个区间的统计。
+
+那么不难写出如下 C++代码（关键地方已经注释）
+
+```cpp
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int result = INT32_MIN;
+        int count = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            count += nums[i];
+            if (count > result) { // 取区间累计的最大值（相当于不断确定最大子序终止位置）
+                result = count;
+            }
+            if (count <= 0) count = 0; // 相当于重置最大子序起始位置，因为遇到负数一定是拉低总和
+        }
+        return result;
+    }
+};
+```
+
+* 时间复杂度：O(n)
+* 空间复杂度：O(1)
+
+当然题目没有说如果数组为空，应该返回什么，所以数组为空的话返回啥都可以了。
+
+### 常见误区
+
+误区一：
+
+不少同学认为 如果输入用例都是-1，或者 都是负数，这个贪心算法跑出来的结果是 0， 这是**又一次证明脑洞模拟不靠谱的经典案例**，建议大家把代码运行一下试一试，就知道了，也会理解 为什么 result 要初始化为最小负数了。
+
+误区二：
+
+大家在使用贪心算法求解本题，经常陷入的误区，就是分不清，是遇到 负数就选择起始位置，还是连续和为负选择起始位置。
+
+在动画演示用，大家可以发现， 4，遇到 -1 的时候，我们依然累加了，为什么呢？
+
+因为和为 3，只要连续和还是正数就会 对后面的元素 起到增大总和的作用。 所以只要连续和为正数我们就保留。
+
+这里也会有录友疑惑，那 4 + -1 之后 不就变小了吗？ 会不会错过 4 成为最大连续和的可能性？
+
+其实并不会，因为还有一个变量 result 一直在更新 最大的连续和，只要有更大的连续和出现，result 就更新了，那么 result 已经把 4 更新了，后面 连续和变成 3，也不会对最后结果有影响。
+
+### 动态规划
+
+当然本题还可以用动态规划来做，在代码随想录动态规划章节我会详细介绍，如果大家想在想看，可以直接跳转：[动态规划版本详解(opens new window)](https://programmercarl.com/0053.%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%92%8C%EF%BC%88%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%89.html#%E6%80%9D%E8%B7%AF)
+
+那么先给出我的 dp 代码如下，有时间的录友可以提前做一做：
+
+```cpp
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        if (nums.size() == 0) return 0;
+        vector<int> dp(nums.size(), 0); // dp[i]表示包括i之前的最大连续子序列和
+        dp[0] = nums[0];
+        int result = dp[0];
+        for (int i = 1; i < nums.size(); i++) {
+            dp[i] = max(dp[i - 1] + nums[i], nums[i]); // 状态转移公式
+            if (dp[i] > result) result = dp[i]; // result 保存dp[i]的最大值
+        }
+        return result;
+    }
+};
+```
+
+* 时间复杂度：O(n)
+* 空间复杂度：O(n)
+
+## 总结
+
+本题的贪心思路其实并不好想，这也进一步验证了，别看贪心理论很直白，有时候看似是常识，但贪心的题目一点都不简单！
+
+后续将介绍的贪心题目都挺难的，所以贪心很有意思，别小看贪心！
+
+## 其他语言版本
+
+### Python
+
+暴力法
+
+```python
+class Solution:
+    def maxSubArray(self, nums):
+        result = float('-inf')  # 初始化结果为负无穷大
+        count = 0
+        for i in range(len(nums)):  # 设置起始位置
+            count = 0
+            for j in range(i, len(nums)):  # 从起始位置i开始遍历寻找最大值
+                count += nums[j]
+                result = max(count, result)  # 更新最大值
+        return result
+
+```
+
+```python
+class Solution:
+    def maxSubArray(self, nums):
+        result = float('-inf')  # 初始化结果为负无穷大
+        count = 0
+        for i in range(len(nums)):
+            count += nums[i]
+            if count > result:  # 取区间累计的最大值（相当于不断确定最大子序终止位置）
+                result = count
+            if count <= 0:  # 相当于重置最大子序起始位置，因为遇到负数一定是拉低总和
+                count = 0
+        return result
+
+
+```
