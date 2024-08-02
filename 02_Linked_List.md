@@ -1,4 +1,4 @@
-# 一、203.移除链表元素
+# 二、203.移除链表元素
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/remove-linked-list-elements/)
 
@@ -182,7 +182,7 @@ if __name__ == '__main__':
 
 ```
 
-# 二、707.设计链表
+# 三、707.设计链表
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/design-linked-list/)
 
@@ -360,7 +360,7 @@ class MyLinkedList:
         current = self.dummy_head.next
         for i in range(index):
             current = current.next
-      
+  
         return current.val
 
     def addAtHead(self, val: int) -> None:
@@ -430,7 +430,7 @@ class MyLinkedList:
             current = self.tail
             for i in range(self.size - index - 1):
                 current = current.prev
-        
+    
         return current.val
 
     def addAtHead(self, val: int) -> None:
@@ -513,7 +513,7 @@ class MyLinkedList:
 # obj.deleteAtIndex(index)
 ```
 
-# 三、206.反转链表
+# 四、206.反转链表
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/reverse-linked-list/)
 
@@ -619,7 +619,7 @@ public:
         // 边缘条件判断
         if(head == NULL) return NULL;
         if (head->next == NULL) return head;
-      
+  
         // 递归调用，翻转第二个节点开始往后的链表
         ListNode *last = reverseList(head->next);
         // 翻转头节点与第二个节点的指向
@@ -677,7 +677,7 @@ class Solution:
 
 ```
 
-# 四、24. 两两交换链表中的节点
+# 五、24. 两两交换链表中的节点
 
 [力扣题目链接(opens new window)](https://leetcode.cn/problems/swap-nodes-in-pairs/)
 
@@ -779,10 +779,10 @@ class Solution:
         pre = head
         cur = head.next
         next = head.next.next
-      
+    
         cur.next = pre  # 交换
         pre.next = self.swapPairs(next) # 将以next为head的后续链表两两交换
-       
+     
         return cur
 ```
 
@@ -797,12 +797,12 @@ class Solution:
     def swapPairs(self, head: ListNode) -> ListNode:
         dummy_head = ListNode(next=head)
         current = dummy_head
-      
+    
         # 必须有cur的下一个和下下个才能交换，否则说明已经交换结束了
         while current.next and current.next.next:
             temp = current.next # 防止节点修改
             temp1 = current.next.next.next
-          
+        
             current.next = current.next.next
             current.next.next = temp
             temp.next = temp1
@@ -811,3 +811,121 @@ class Solution:
 
 ```
 
+
+# 六、19.删除链表的倒数第N个节点
+
+[力扣题目链接(opens new window)](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+
+给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+
+进阶：你能尝试使用一趟扫描实现吗？
+
+示例 1：
+
+https://code-thinking-1253855093.file.myqcloud.com/pics/20210510085957392.png（图像链接）
+
+输入：head = [1,2,3,4,5], n = 2 输出：[1,2,3,5]
+
+示例 2：
+
+输入：head = [1], n = 1 输出：[]
+
+示例 3：
+
+输入：head = [1,2], n = 1 输出：[1]
+
+## 算法公开课
+
+**[《代码随想录》算法视频公开课 **(opens new window)**](https://programmercarl.com/other/gongkaike.html)：：[链表遍历学清楚！ | LeetCode：19.删除链表倒数第N个节点 **(opens new window)**](https://www.bilibili.com/video/BV1vW4y1U7Gf)，相信结合视频再看本篇题解，更有助于大家对链表的理解。**
+
+## 思路
+
+双指针的经典应用，如果要删除倒数第n个节点，让fast移动n步，然后让fast和slow同时移动，直到fast指向链表末尾。删掉slow所指向的节点就可以了。
+
+思路是这样的，但要注意一些细节。
+
+分为如下几步：
+
+* 首先这里我推荐大家使用虚拟头结点，这样方便处理删除实际头结点的逻辑，如果虚拟头结点不清楚，可以看这篇： [链表：听说用虚拟头节点会方便很多？(opens new window)](https://programmercarl.com/0203.%E7%A7%BB%E9%99%A4%E9%93%BE%E8%A1%A8%E5%85%83%E7%B4%A0.html)
+* 定义fast指针和slow指针，初始值为虚拟头结点，如图：
+
+https://code-thinking.cdn.bcebos.com/pics/19.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9.png（图像链接）
+
+* fast首先走n + 1步 ，为什么是n+1呢，因为只有这样同时移动的时候slow才能指向删除节点的上一个节点（方便做删除操作），如图：
+
+https://code-thinking.cdn.bcebos.com/pics/19.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B91.png（图像链接）
+
+* fast和slow同时移动，直到fast指向末尾，如题：
+
+https://code-thinking.cdn.bcebos.com/pics/19.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B92.png（图像链接）
+
+* 删除slow指向的下一个节点，如图：
+
+https://code-thinking.cdn.bcebos.com/pics/19.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B93.png（图像链接）
+
+此时不难写出如下C++代码：
+
+```cpp
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummyHead = new ListNode(0);
+        dummyHead->next = head;
+        ListNode* slow = dummyHead;
+        ListNode* fast = dummyHead;
+        while(n-- && fast != NULL) {
+            fast = fast->next;
+        }
+        fast = fast->next; // fast再提前走一步，因为需要让slow指向删除节点的上一个节点
+        while (fast != NULL) {
+            fast = fast->next;
+            slow = slow->next;
+        }
+        slow->next = slow->next->next; 
+      
+        // ListNode *tmp = slow->next;  C++释放内存的逻辑
+        // slow->next = tmp->next;
+        // delete tmp;
+      
+        return dummyHead->next;
+    }
+};
+```
+
+* 时间复杂度: O(n)
+* 空间复杂度: O(1)
+
+## 其他语言版本
+
+### Python:
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        # 创建一个虚拟节点，并将其下一个指针设置为链表的头部
+        dummy_head = ListNode(0, head)
+      
+        # 创建两个指针，慢指针和快指针，并将它们初始化为虚拟节点
+        slow = fast = dummy_head
+      
+        # 快指针比慢指针快 n+1 步
+        for i in range(n+1):
+            fast = fast.next
+      
+        # 移动两个指针，直到快速指针到达链表的末尾
+        while fast:
+            slow = slow.next
+            fast = fast.next
+      
+        # 通过更新第 (n-1) 个节点的 next 指针删除第 n 个节点
+        slow.next = slow.next.next
+      
+        return dummy_head.next
+
+```
