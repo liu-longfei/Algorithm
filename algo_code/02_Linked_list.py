@@ -23,22 +23,25 @@ class Solution_2:
         return dummy_head.next
 
 
-if __name__ == '__main__':
-    # 创建链表: 1 -> 2 -> 6 -> 3 -> 4 -> 5 -> 6
-    head = ListNode(1)
-    head.next = ListNode(2)
-    head.next.next = ListNode(6)
-    head.next.next.next = ListNode(3)
-    head.next.next.next.next = ListNode(4)
-    head.next.next.next.next.next = ListNode(5)
-    head.next.next.next.next.next.next = ListNode(6)
+head = ListNode(1)
+head.next = ListNode(2)
+head.next.next = ListNode(6)
+head.next.next.next = ListNode(3)
+head.next.next.next.next = ListNode(4)
+head.next.next.next.next.next = ListNode(5)
+head.next.next.next.next.next.next = ListNode(6)
 
-    obj = Solution_2()
-    # 移除值为 6 的节点
-    new_head = obj.removeElements(head, 6)
+obj = Solution_2()
+# 移除值为 6 的节点
+new_head = obj.removeElements(head, 6)
 
-    # 打印移除后的链表
-    curr = new_head
-    while curr:
-        print(curr.val, end=" -> ")
-        curr = curr.next
+# 打印移除后的链表
+curr = new_head
+while curr:
+    print(curr.val, end=" -> ")
+    curr = curr.next
+
+
+# 设计链表
+class Solution_3:
+    pass
