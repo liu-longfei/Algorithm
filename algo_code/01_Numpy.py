@@ -31,3 +31,19 @@ class Solution_2:
 
 list_1 = [-1, 2, 4, 8]
 print(Solution_2.search(list_1, 3))
+
+
+# 移除元素，快慢指针
+class Solution_3:
+    @classmethod
+    def removeElement(cls, nums: list, val: int):
+        slow = 0
+        for i in range(len(nums)):
+            if nums[i] != val:
+                nums[slow] = nums[i]
+                slow += 1
+        return slow
+
+
+list_1 = [0, 1, 2, 3, 4, 2, 2, 2, 7]
+print(Solution_3.removeElement(list_1, 2))
