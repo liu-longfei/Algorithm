@@ -34,3 +34,17 @@ class Solution_2:
 
 s = 'abcde'
 print(Solution_2.reverseStr(s, 3))
+
+
+# 替换数字
+class Solution_3:
+    @classmethod
+    def changeDigit(cls, s):
+        list_s = list(s)
+        for i in range(len(list_s)):
+            if list_s[i].isdigit():
+                list_s[i] = 'number'
+        return ''.join(list_s)
+
+
+print(Solution_3.changeDigit('abc1dce'))
