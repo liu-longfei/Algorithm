@@ -47,3 +47,25 @@ class Solution_3:
 
 list_1 = [0, 1, 2, 3, 4, 2, 2, 2, 7]
 print(Solution_3.removeElement(list_1, 2))
+
+
+class Solution_4:
+    @classmethod
+    def sortSquares(cls, nums: list[int]) -> list[int]:
+        left = 0
+        right = len(nums) - 1
+        index = len(nums) - 1
+        results = [0] * len(nums)
+        while left <= right:
+            if nums[left] ** 2 > nums[right] ** 2:
+                results[index] = nums[left] ** 2
+                left += 1
+            else:
+                results[index] = nums[right] ** 2
+                right -= 1
+            index  -= 1
+        return results
+
+
+list_1 = [-10, -2, 0, 4, 100]
+print(Solution_4.sortSquares(list_1))
