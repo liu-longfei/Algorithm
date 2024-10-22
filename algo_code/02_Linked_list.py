@@ -45,3 +45,17 @@ while curr:
 # 设计链表
 class Solution_3:
     pass
+
+
+class Solution_4:
+    @classmethod
+    def reverseList(cls, head: ListNode):
+        pre = None
+        cur = head
+        while cur:
+            tmp = cur.next
+            cur.next = pre
+            
+            pre = cur
+            cur = tmp
+        return pre
