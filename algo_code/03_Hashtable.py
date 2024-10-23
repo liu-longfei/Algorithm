@@ -62,3 +62,16 @@ class Solution_4:
                 n = new_sum
 
 print(Solution_4.isHappy(129))
+
+
+class Solution_5:
+    @classmethod
+    def twoSum(cls, nums: list[int], target: int):
+        records = dict()
+        for idx, val in enumerate(nums):
+            if target - val in records:
+                return [records[target - val], idx]
+            records[val] = idx
+        return []
+
+print(Solution_5.twoSum([0, 1, 2, 3, 4, 5, 100], 105))
