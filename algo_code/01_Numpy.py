@@ -63,9 +63,31 @@ class Solution_4:
             else:
                 results[index] = nums[right] ** 2
                 right -= 1
-            index  -= 1
+            index -= 1
         return results
 
 
 list_1 = [-10, -2, 0, 4, 100]
 print(Solution_4.sortSquares(list_1))
+
+
+# 209.长度最小的子数组
+class Solution_5:
+    @classmethod
+    def min_subarray_length(cls, s: int, nums: list):
+        min_len = float('inf')
+        idx = 0
+        sum = 0
+
+        for i in range(len(nums)):
+            sum += nums[i]
+            while sum >= s:
+                len_ = i - idx + 1
+                min_len = min_len if min_len < len_ else len_
+                sum -= nums[idx]
+                idx += 1
+            
+        return 0 if min_len == float('inf') else min_len
+
+
+print(Solution_5.min_subarray_length(7, [2, 3, 1, 2, 4, 3]))
