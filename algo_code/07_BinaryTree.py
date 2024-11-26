@@ -101,3 +101,36 @@ root.right.right = TreeNode(9)
 
 print(Solution_5.levelOrder(root))
 print(Solution_5.levelOrder(Solution_6.invertTree(root)))
+
+
+# 八、101. 对称二叉树
+class Solution_8:
+    @classmethod
+    def is_symmetric(cls, root: TreeNode) -> bool:
+        if root == None:
+            return True
+        return cls.commpare(root.left, root.right)
+
+    @classmethod
+    def commpare(cls, left: TreeNode, right: TreeNode):
+        if left == None and right != None:
+            return False
+        elif left != None and right == None:
+            return False
+        elif left == None and right == None:
+            return True
+        elif left.val != right.val:
+            return False
+        outside = cls.commpare(left.left, right.right)
+        inside = cls.commpare(left.right, right.left)
+        return outside and inside
+
+
+root_8 = TreeNode(5)
+root_8.left = TreeNode(2)
+root_8.right = TreeNode(2)
+root_8.left.left = TreeNode(4)
+root_8.left.right = TreeNode(3)
+root_8.right.left = TreeNode(3)
+root_8.right.right = TreeNode(4)
+print(Solution_8.is_symmetric(root_8))
