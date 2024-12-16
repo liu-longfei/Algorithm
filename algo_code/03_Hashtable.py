@@ -64,6 +64,7 @@ class Solution_4:
 print(Solution_4.isHappy(129))
 
 
+# 1. 两数之和
 class Solution_5:
     @classmethod
     def twoSum(cls, nums: list[int], target: int):
@@ -75,3 +76,40 @@ class Solution_5:
         return []
 
 print(Solution_5.twoSum([0, 1, 2, 3, 4, 5, 100], 105))
+
+
+# 第454题.四数相加II
+class Solution_6:
+    @classmethod
+    def for_sum_count(cls, a, b, c, d):
+        dict_1 = {}
+        for i in a:
+            for j in b:
+                dict_1[i + j] = dict_1.get(i + j, 0) + 1
+        count = 0
+        for m in c:
+            for n in d:
+                key = -m - n
+                if key in dict_1:
+                    count += dict_1[key]
+        return count
+
+
+print(Solution_6.for_sum_count([1, 2], [-2, -1], [-1, 2], [0, 2]))
+
+
+# 七、383. 赎金信
+class Solution_7:
+    @classmethod
+    def can_construct(cls, ransom: str, magazine: str):
+        count_dict = {}
+        for i in magazine:
+            count_dict[i] = count_dict.get(i, 0) + 1
+        for j in ransom:
+            if j not in count_dict or count_dict.get(j) == 0:
+                return False
+            count_dict[j] -= 1
+        return True
+
+
+print(Solution_7.can_construct('aa', 'aab'))
