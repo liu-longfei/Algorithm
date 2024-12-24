@@ -26,3 +26,76 @@ class Solution_2:
 
 list_1 = ['a', 'b', 'c', 'd']
 print(Solution_2.reverseStr(list_1))
+
+
+class Solution_3:
+    @classmethod
+    def change(cls, s):
+        list_1 = list(s)
+        for i in range(len(list_1)):
+            if list_1[i].isdigit():
+                list_1[i] = 'number'
+        return ''.join(list_1)
+
+
+print(Solution_3.change('a1b2c3'))
+
+
+# 四、151.翻转字符串里的单词
+class Solution_4:
+    @classmethod
+    def reverse_words_1(cls, s: str):
+        s = s.strip()
+        s = s[::-1]
+        s = ' '.join([word[::-1] for word in s.split()])
+        return s
+
+    @classmethod
+    def reverse_words_2(cls, s: str):
+        s = s.strip()
+        words_list = s.split()
+        l = 0
+        r = len(words_list) - 1
+        while l < r:
+            words_list[l], words_list[r] = words_list[r], words_list[l]
+            l += 1
+            r -= 1
+        return ' '.join(words_list)
+
+
+print(Solution_4.reverse_words_1('hello world'))
+print(Solution_4.reverse_words_2('hello world'))
+
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+# 五、206.反转链表
+class Solution_5:
+    @classmethod
+    def reverse_list(cls, head: ListNode):
+        cur = head
+        pre = None
+        while cur:
+            temp = cur.next
+            cur.next = pre
+            pre = cur
+            cur = temp
+        return pre
+
+
+head = ListNode(1)
+head.next = ListNode(2)
+head.next.next = ListNode(3)
+head.next.next.next = ListNode(4)
+head.next.next.next.next = ListNode(5)
+
+res = Solution_5.reverse_list(head)
+
+
+while res:
+    print(res.val, end=" -> ")
+    res = res.next
