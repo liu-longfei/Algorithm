@@ -21,3 +21,19 @@ class Solution_4:
 
 print(Solution_4.is_valid("()[]{}"))
 print(Solution_4.is_valid("([{}])))"))
+
+
+# 1047. 删除字符串中的所有相邻重复项
+class Solution_5:
+    @classmethod
+    def remove_duplicates(cls, S: str):
+        result = list()
+        for s in S:
+            if result and result[-1] == s:
+                result.pop()
+            else:
+                result.append(s)
+        return ''.join(result)
+
+
+print(Solution_5.remove_duplicates('abbaca'))
