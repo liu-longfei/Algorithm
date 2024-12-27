@@ -134,3 +134,29 @@ root_8.left.right = TreeNode(3)
 root_8.right.left = TreeNode(3)
 root_8.right.right = TreeNode(4)
 print(Solution_8.is_symmetric(root_8))
+
+
+# 九、104.二叉树的最大深度
+class Solution_9:
+    @classmethod
+    def max_depth(cls, root: TreeNode):
+        return cls.get_depth(root)
+
+    @classmethod
+    def get_depth(cls, node):
+        if not node:
+            return 0
+        left_height = cls.get_depth(node.left)
+        right_height = cls.get_depth(node.right)
+        height = 1 + max(left_height, right_height)
+        return height
+
+
+root_9 = TreeNode(5)
+root_9.left = TreeNode(2)
+root_9.right = TreeNode(2)
+root_9.left.left = TreeNode(4)
+root_9.left.right = TreeNode(3)
+root_9.right.left = TreeNode(3)
+root_9.right.right = TreeNode(4)
+print(Solution_9.max_depth(root_9))
