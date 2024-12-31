@@ -44,7 +44,7 @@ class Solution_3:
         cur_diff = 0
         result = 1
         for i in range(len(nums) - 1):
-            cur_diff = nums[i+1] - nums[i]
+            cur_diff = nums[i + 1] - nums[i]
             if (pre_diff >= 0 and cur_diff < 0) or (pre_diff <= 0 and cur_diff > 0):
                 result += 1
                 pre_diff = cur_diff
@@ -70,3 +70,34 @@ result_1 = Solution_3.wiggle_max_length_greedy([1, 2, 2, 2, 3, 4])
 result_2 = Solution_3.wiggle_max_lenth_dynamic([1, 2, 2, 2, 3, 4])
 print(result_1, result_2)
 
+
+# 四、53. 最大子序和
+class Solution_4:
+    # 使用贪心算法
+    @classmethod
+    def max_sub_array_1(cls, nums: list):
+        result = float('-inf')
+        count = 0
+        for i in nums:
+            count += i
+            if count > result:
+                result = count
+            if count < 0:
+                count = 0
+        return result
+
+    # 使用动态规划
+    @classmethod
+    def max_sub_array_2(cls, nums: list):
+        dp = [0] * len(nums)
+        dp[0] = nums[0]
+        result = nums[0]
+        for i in range(1, len(nums)):
+            dp[i] = max(dp[i - 1] + nums[i], nums[i])
+            if dp[i] > result:
+                result = dp[i]
+        return result
+
+
+print(Solution_4.max_sub_array_1([-2, 1, -3, 4, -1, 2, 1, -5, 4]))
+print(Solution_4.max_sub_array_2([-2, 1, -3, 4, -1, 2, 1, -5, 4]))
