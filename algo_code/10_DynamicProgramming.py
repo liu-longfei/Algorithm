@@ -38,3 +38,16 @@ class Solution_3:
 
 
 print(Solution_3.climb_stair(3))
+
+
+# 四、746. 使用最小花费爬楼梯
+class Solution_4:
+    @classmethod
+    def min_cost_climbing_stairs(cls, cost: list):
+        dp = [0] * (len(cost) + 1)
+        for i in range(2, len(dp)):
+            dp[i] = min(dp[i-1] + cost[i-1], dp[i-2] + cost[i-2])
+        return dp[-1]
+
+
+print(Solution_4.min_cost_climbing_stairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1]))
