@@ -99,6 +99,13 @@ class Solution_6:
 
     @classmethod
     def main(cls):
+        '''
+4 5
+1 1 0 0 0
+1 1 0 0 0
+0 0 1 0 0
+0 0 0 1 1
+        '''
         n, m = map(int, input().split())
 
         grid = []
